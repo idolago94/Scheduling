@@ -1,0 +1,26 @@
+﻿<Properties>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+  <MonoDevelop.Ide.Workbench ActiveDocument="OperatingSystem.cs">
+    <Files>
+      <File FileName="OperatingSystem.cs" Line="116" Column="38" />
+      <File FileName="SchedulingPolicy.cs" Line="8" Column="20" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="Scheduling" expanded="True">
+            <Node name="Scheduling" expanded="True">
+              <Node name="Code files" expanded="True" />
+              <Node name="OperatingSystem.cs" selected="True" />
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>

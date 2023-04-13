@@ -11,5 +11,9 @@ namespace Scheduling
         {
             //your code here
         }
+        public IdleCode(String codeFileName) : base(codeFileName)
+        {
+            Console.WriteLine("Start Idle");
+        }
     }
 }

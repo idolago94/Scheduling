@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.VisualBasic;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -24,8 +25,11 @@ namespace Scheduling
             cpu.OperatingSystem = this;
             disk.OperatingSystem = this;
             m_spPolicy = sp;
-
-            //create an "idle" process here
+            if(m_spPolicy.quntom!=-1)
+                cpu.RemainingTime = m_spPolicy.quntom;
+            //create an "idle" process here :x
+            this.CreateIdleProcess();
+            
         }
 
 
@@ -34,6 +38,16 @@ namespace Scheduling
             Code code = new Code(sCodeFileName);
             m_dProcessTable[m_cProcesses] = new ProcessTableEntry(m_cProcesses, sCodeFileName, code);
             m_dProcessTable[m_cProcesses].StartTime = CPU.TickCount;
+            m_spPolicy.AddProcess(m_cProcesses);
+            m_cProcesses++;
+        }
+        public void CreateIdleProcess()
+        {
+            String sCodeFileName = "idle.code";
+            IdleCode idleCode = new IdleCode(sCodeFileName);
+            m_dProcessTable[m_cProcesses] = new ProcessTableEntry(m_cProcesses, sCodeFileName, idleCode);
+            m_dProcessTable[m_cProcesses].StartTime = CPU.TickCount;
+            m_dProcessTable[m_cProcesses].Priority = -9999999;
             m_spPolicy.AddProcess(m_cProcesses);
             m_cProcesses++;
         }
@@ -59,6 +73,7 @@ namespace Scheduling
 
         public void TimeoutReached()
         {
+            CPU.RemainingTime = m_spPolicy.quantom;
             ActivateScheduler();
         }
 
@@ -86,8 +101,22 @@ namespace Scheduling
             //when the token is null, EOF has been reached.
             //write the value to the appropriate address space of the calling process.
             //activate the next request in queue on the disk.
-            throw new NotImplementedException();
-            if(m_spPolicy.RescheduleAfterInterrupt())
+            double currentNumber;
+            if (rFinishedRequest == null)
+            {
+                currentNumber = Double.NaN;
+            }else
+                {
+                currentNumber = Convert.ToDouble(rFinishedRequest.Token);
+                }
+            bool hasValue = m_dProcessTable.TryGetValue(rFinishedRequest.ProcessId, out ProcessTableEntry process);
+            if (hasValue && process!=null)
+                process.AddressSpace[rFinishedRequest.TargetVariable] = currentNumber;
+
+            if (m_lReadRequests.Any())// isEmpty?
+                Disk.ActiveRequest = m_lReadRequests.First(); 
+
+            if (m_spPolicy.RescheduleAfterInterrupt())
                 ActivateScheduler();
         }
 
@@ -100,7 +129,28 @@ namespace Scheduling
             //Our CPU does not have registers, so we do not store or switch register values.
             //returns the process table information of the outgoing process
             //After this method terminates, the execution continues with the new process
-            throw new NotImplementedException();
+            bool hasValue = m_dProcessTable.TryGetValue(iEnteringProcessId, out ProcessTableEntry new_process);
+            if(!hasValue || CPU.ActiveProcess==-1)
+            {
+                Console.WriteLine("``````````````````````````~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~````````````````````````");
+                Console.WriteLine(new_process.ToString);
+            }
+            else
+            {
+                if (new_process != null)
+                {
+                    m_dProcessTable.TryGetValue(CPU.ActiveProcess, out ProcessTableEntry current_process);
+                    current_process.LastCPUTime = CPU.TickCount;
+                    CPU.ActiveProcess = new_process.ProcessId;
+                    CPU.ActiveAddressSpace = new_process.AddressSpace;
+                    CPU.ActiveConsole = new_process.Console;
+                    CPU.ProgramCounter = current_process.ProgramCounter;
+                
+                return new_process;
+                }
+            }
+            return null;
+            //throw new NullReferenceException();
         }
 
         public void ActivateScheduler()
@@ -112,9 +162,15 @@ namespace Scheduling
                 CPU.Done = true;
             }
             else
-            {
-                bool bOnlyIdleRemains = false;
-                //add code here to check if only the Idle process remains
+            {//add code here to check if only the Idle process remains
+                bool bOnlyIdleRemains = true;
+                foreach(ProcessTableEntry process in m_dProcessTable.Values)
+                {
+                    if(process != null && process.Name!="idle.code" && process.Done==false)
+                    {
+                        bOnlyIdleRemains = false; break;
+                    }
+                }
                 if(bOnlyIdleRemains)
                 {
                     Console.WriteLine("Only idle remains.");

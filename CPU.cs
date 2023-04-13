@@ -107,6 +107,8 @@ namespace Scheduling
             {
                 //your code here
                 //yield releases the CPU and activates the scheduler
+                // TODO: ask guy if this is ok
+                OperatingSystem.ActivateScheduler();
             }
             else
                 throw new NotImplementedException("Unsupported command " + sLine);

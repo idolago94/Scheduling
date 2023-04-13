@@ -5,25 +5,12 @@ using System.Text;
 
 namespace Scheduling
 {
-    class RoundRobin : SchedulingPolicy
+    class RoundRobin : FirstComeFirstServedPolicy
     {
-        public RoundRobin(int iQuantum)
+        public RoundRobin(int iQuantum) : base()
         {
+            base.quantom = iQuantum;
         }
-
-        public override int NextProcess(Dictionary<int, ProcessTableEntry> dProcessTable)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void AddProcess(int iProcessId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override bool RescheduleAfterInterrupt()
-        {
-            throw new NotImplementedException();
-        }
+        public int getQuantom() { return quantom; }
     }
 }

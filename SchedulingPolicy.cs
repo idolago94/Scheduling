@@ -7,6 +7,9 @@ namespace Scheduling
 {
     abstract class SchedulingPolicy
     {
+        public int quantom = -1;
+        public int quntom { get; set; }
+        
         //returns the pid of the next process to be executed on the CPU
         public abstract int NextProcess(Dictionary<int, ProcessTableEntry> dProcessTable);
         //notifies the scheduler that a process has been added

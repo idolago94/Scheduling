@@ -43,6 +43,7 @@ namespace Scheduling
         }
         static void Main(string[] args)
         {
+            Console.WriteLine("----- START -----");
             //set the working directory to the "Code files" dir
             Directory.SetCurrentDirectory("../../../Code files");
 
@@ -50,8 +51,8 @@ namespace Scheduling
             CPU cpu = new CPU(disk);
             cpu.Debug = true;
             OperatingSystem os = new OperatingSystem(cpu, disk, new  HighestIndexPolicy());
-            Example1(os);
-            //Example2(os);
+            //Example1(os);
+            Example2(os);
             //Example3(os);
             //Example4(os);
             os.ActivateScheduler();
